@@ -131,7 +131,7 @@ def get_search_metadata(dsid):
     else:
         search_metadata.update({'instrument': instruments['path']})
     
-    # GCMD locations.  Parse the location paths into their individual components.
+    # GCMD locations.  Parse the location paths into their individual components (category, type, subregion1, subregion2, subregion3, detailed location).
     location_query = f"SELECT path, last_in_path " \
         f"FROM locations_new AS l " \
         f"LEFT JOIN gcmd_locations AS g " \
@@ -157,6 +157,7 @@ def get_search_metadata(dsid):
             location_subregion3s.append(parsed_location['location_subregion3'])
             location_detaileds.append(parsed_location['location_detailed'])
 
+        # Remove duplicate entries for each location component.
         unique_categories = list(set(location_categories))
         unique_types = list(set(location_types))
         unique_subregion1s = list(set(location_subregion1s))

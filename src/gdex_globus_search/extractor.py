@@ -131,7 +131,7 @@ def get_search_metadata(dsid):
     else:
         search_metadata.update({'instrument': instruments['path']})
     
-    # GCMD locations
+    # GCMD locations.  Parse the location paths into their individual components (category, type, subregion1, subregion2, subregion3, detailed location).
     location_query = f"SELECT path, last_in_path " \
         f"FROM locations_new AS l " \
         f"LEFT JOIN gcmd_locations AS g " \
@@ -142,8 +142,37 @@ def get_search_metadata(dsid):
         search_metadata.update({'gcmd_location_path': None})
         search_metadata.update({'location': None})
     else:
+        location_categories = []
+        location_types = []
+        location_subregion1s = []
+        location_subregion2s = []
+        location_subregion3s = []
+        location_detaileds = []
+        for path in locations['path']:
+            parsed_location = parse_gcmd_location_path(path)
+            location_categories.append(parsed_location['location_category'])
+            location_types.append(parsed_location['location_type'])
+            location_subregion1s.append(parsed_location['location_subregion1'])
+            location_subregion2s.append(parsed_location['location_subregion2'])
+            location_subregion3s.append(parsed_location['location_subregion3'])
+            location_detaileds.append(parsed_location['location_detailed'])
+
+        # Remove duplicate entries for each location component and filter out None values.
+        unique_categories = list(set([x for x in location_categories if x is not None]))
+        unique_types = list(set([x for x in location_types if x is not None]))
+        unique_subregion1s = list(set([x for x in location_subregion1s if x is not None]))
+        unique_subregion2s = list(set([x for x in location_subregion2s if x is not None]))
+        unique_subregion3s = list(set([x for x in location_subregion3s if x is not None]))
+        unique_detaileds = list(set([x for x in location_detaileds if x is not None]))
+
         search_metadata.update({'gcmd_location_path': locations['path']})
         search_metadata.update({'location': locations['last_in_path']})
+        search_metadata.update({'gcmd_location_category': unique_categories})
+        search_metadata.update({'gcmd_location_type': unique_types})
+        search_metadata.update({'gcmd_location_subregion1': unique_subregion1s})
+        search_metadata.update({'gcmd_location_subregion2': unique_subregion2s})
+        search_metadata.update({'gcmd_location_subregion3': unique_subregion3s})
+        search_metadata.update({'gcmd_location_detailed': unique_detaileds})
 
     # Data contributors
     contributor_query = f"SELECT path " \
@@ -169,6 +198,26 @@ def get_search_metadata(dsid):
     search_metadata.update({'tags': tags})
 
     return search_metadata
+
+def parse_gcmd_location_path(location_path):
+    """ Parse GCMD location path into hierarchical components """
+    if not location_path:
+        return None
+    location_components = [item.strip() for item in location_path.split('>')]
+    location_category = location_components[0] if len(location_components) > 0 else None
+    location_type = location_components[1] if len(location_components) > 1 else None
+    location_subregion1 = location_components[2] if len(location_components) > 2 else None
+    location_subregion2 = location_components[3] if len(location_components) > 3 else None
+    location_subregion3 = location_components[4] if len(location_components) > 4 else None
+    location_detailed = location_components[5] if len(location_components) > 5 else None
+    return {
+        'location_category': location_category,
+        'location_type': location_type,
+        'location_subregion1': location_subregion1,
+        'location_subregion2': location_subregion2,
+        'location_subregion3': location_subregion3,
+        'location_detailed': location_detailed
+    }
 
 def get_dssdb_metadata(dsid):
     """ Query and return metadata from dssdb tables """

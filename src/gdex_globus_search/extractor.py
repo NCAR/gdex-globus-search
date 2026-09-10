@@ -157,13 +157,13 @@ def get_search_metadata(dsid):
             location_subregion3s.append(parsed_location['location_subregion3'])
             location_detaileds.append(parsed_location['location_detailed'])
 
-        # Remove duplicate entries for each location component.
-        unique_categories = list(set(location_categories))
-        unique_types = list(set(location_types))
-        unique_subregion1s = list(set(location_subregion1s))
-        unique_subregion2s = list(set(location_subregion2s))
-        unique_subregion3s = list(set(location_subregion3s))
-        unique_detaileds = list(set(location_detaileds))
+        # Remove duplicate entries for each location component and filter out None values.
+        unique_categories = list(set([x for x in location_categories if x is not None]))
+        unique_types = list(set([x for x in location_types if x is not None]))
+        unique_subregion1s = list(set([x for x in location_subregion1s if x is not None]))
+        unique_subregion2s = list(set([x for x in location_subregion2s if x is not None]))
+        unique_subregion3s = list(set([x for x in location_subregion3s if x is not None]))
+        unique_detaileds = list(set([x for x in location_detaileds if x is not None]))
 
         search_metadata.update({'gcmd_location_path': locations['path']})
         search_metadata.update({'location': locations['last_in_path']})

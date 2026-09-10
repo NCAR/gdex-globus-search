@@ -131,7 +131,7 @@ def get_search_metadata(dsid):
     else:
         search_metadata.update({'instrument': instruments['path']})
     
-    # GCMD locations
+    # GCMD locations.  Parse the location paths into their individual components.
     location_query = f"SELECT path, last_in_path " \
         f"FROM locations_new AS l " \
         f"LEFT JOIN gcmd_locations AS g " \

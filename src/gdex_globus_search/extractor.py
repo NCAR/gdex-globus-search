@@ -141,6 +141,12 @@ def get_search_metadata(dsid):
     if not locations:
         search_metadata.update({'gcmd_location_path': None})
         search_metadata.update({'location': None})
+        search_metadata.update({'gcmd_location_category': None})
+        search_metadata.update({'gcmd_location_type': None})
+        search_metadata.update({'gcmd_location_subregion1': None})
+        search_metadata.update({'gcmd_location_subregion2': None})
+        search_metadata.update({'gcmd_location_subregion3': None})
+        search_metadata.update({'gcmd_location_detailed': None})
     else:
         location_categories = []
         location_types = []

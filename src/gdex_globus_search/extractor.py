@@ -279,7 +279,7 @@ def get_wagtail_metadata(dsid):
     cond = f"dsid='{dsid}'"
     wagtail_metadata = {}
 
-    wagtail_rec = pgget('dataset_description_datasetdescriptionpage', 'update_freq, volume', cond)
+    wagtail_rec = pgget('dataset_description_datasetdescriptionpage', 'update_freq, volume, dslogo', cond)
 
     if 'update_freq' not in wagtail_rec or wagtail_rec['update_freq'] is None:
         updates = None
@@ -291,9 +291,15 @@ def get_wagtail_metadata(dsid):
     else:
         total_volume = wagtail_rec['volume']['full'] if 'full' in wagtail_rec['volume'] else None
 
+    if 'dslogo' not in wagtail_rec or wagtail_rec['dslogo'] is None or not wagtail_rec['dslogo'].strip():
+        dslogo = None
+    else:
+        dslogo = wagtail_rec['dslogo']
+
     wagtail_metadata.update({
         'updates': updates,
-        'total_volume': total_volume
+        'total_volume': total_volume,
+        'dataset_logo': dslogo
     })
 
     return wagtail_metadata

@@ -9,7 +9,7 @@ dataset-search = "gdex_globus_search:cli"
 
 [project]
 name = "gdex_globus_search"
-version = "1.1.5"
+version = "1.1.6"
 authors = [
   { name="Thomas Cram", email="tcram@ucar.edu" },
 ]

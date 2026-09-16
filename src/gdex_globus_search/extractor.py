@@ -291,7 +291,7 @@ def get_wagtail_metadata(dsid):
     else:
         total_volume = wagtail_rec['volume']['full'] if 'full' in wagtail_rec['volume'] else None
 
-    if 'dslogo' not in wagtail_rec or wagtail_rec['dslogo'] is None:
+    if 'dslogo' not in wagtail_rec or wagtail_rec['dslogo'] is None or not wagtail_rec['dslogo'].strip():
         dslogo = None
     else:
         dslogo = wagtail_rec['dslogo']
